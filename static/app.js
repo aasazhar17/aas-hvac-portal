@@ -716,9 +716,9 @@ function initModals() {
                     setTimeout(() => {
                         catalogSuccess.style.display = 'none';
                         catalogModal.classList.remove('active');
-                        // Download a placeholder mock PDF file
+                        // Download the official company PDF catalog
                         const link = document.createElement('a');
-                        link.href = 'data:application/pdf;base64,JVBERi0xLjQKJcfsj6y9CgoxIDAgb2JqCjw8L1R5cGUvQ2F0YWxvZy9QYWdlcyAyIDAgUj4+CmVuZG9iagoyIDAgb2JqCjw8L1R5cGUvUGFnZXMvQ291bnQgMS9LaWRzWzMgMCBSXT4+CmVuZG9iagozIDAgb2JqCjw8L1R5cGUvUGFnZS9QYXJlbnQgMiAwIFIvTWVkaWFCb3hbMCAwIDU5NSA4NDJdL0NvbnRlbnRzIDQgMCBSPj4KZW5kb2JqCjQgMCBvYmoKPDwvTGVuZ3RoIDYyPj5zdHJlYW0KQlQKL0YxIDEyIFRmCjUwIDcwMCBUZAooQUFTIEFpciBDb25kaXRpb25pbmcgJiBFbmdpbmVlcmluZyBDYXRhbG9nIDIwMjYpIFRkCkVUCmVuZHN0cmVhbQplbmRvYmoKeHJlZgowIDUKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDE5IDAwMDAwIG4gCjAwMDAwMDAwNzAgMDAwMDAgbiAKMDAwMDAwMDEyMCAwMDAwIG4gCjAwMDAwMDAyMTUgMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDUvUm9vdCAxIDAgUj4+CnN0YXJ0eHJlZgowCiUlRU9GCg==';
+                        link.href = '/AAS_Catalog_2026.pdf';
                         link.download = 'AAS_Air_Conditioning_Catalog_2026.pdf';
                         link.click();
                     }, 2000);
