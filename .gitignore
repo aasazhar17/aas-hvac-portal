@@ -1,0 +1,16 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Local SQLite Database (keeps your operational logs private)
+database.db
+
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+
+# OS specific files
+.DS_Store
+Thumbs.db
