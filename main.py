@@ -16,7 +16,7 @@ app = FastAPI(
 )
 
 # Admin Key Security Token
-ADMIN_SECURE_TOKEN = "AAS_ADMIN_2026"
+ADMIN_SECURE_TOKEN = "AAS_ADMIN_ARSHAD_2026"
 
 # --- Pydantic Validation Models ---
 class InquirySchema(BaseModel):
