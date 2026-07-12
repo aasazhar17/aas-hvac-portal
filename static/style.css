@@ -1787,6 +1787,15 @@ footer {
         font-size: 2.25rem;
         line-height: 1.25;
     }
+    
+    .section-padding {
+        padding: 3.5rem 0 !important; /* Reduce vertical padding to tighten spacing and shorten scroll length */
+    }
+    
+    .hero {
+        min-height: auto !important;
+        padding: 120px 0 50px 0 !important;
+    }
 
     /* Stack grid sections on all mobile and tablet viewports to prevent layout push */
     .capabilities-grid, .products-list-grid, .projects-grid, .certs-grid, .stats-grid {
