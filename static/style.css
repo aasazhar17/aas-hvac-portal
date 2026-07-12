@@ -81,12 +81,17 @@
     scroll-behavior: smooth;
 }
 
+html, body {
+    width: 100%;
+    overflow-x: hidden;
+    position: relative;
+}
+
 body {
     background-color: var(--bg-main);
     color: var(--text-main);
     font-family: var(--font-body);
     line-height: 1.6;
-    overflow-x: hidden;
     transition: background-color 0.5s ease, color 0.5s ease;
     -webkit-font-smoothing: antialiased;
 }
@@ -1775,11 +1780,29 @@ footer {
 
 @media (max-width: 768px) {
     .section-header h2 {
-        font-size: 2.25rem;
+        font-size: 2rem;
     }
     
     .hero-content h1 {
-        font-size: 3rem;
+        font-size: 2.25rem;
+        line-height: 1.25;
+    }
+
+    /* Stack grid sections on all mobile and tablet viewports to prevent layout push */
+    .capabilities-grid, .products-list-grid, .projects-grid, .certs-grid, .stats-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem;
+    }
+
+    .stat-item {
+        border-right: none !important;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 1.5rem;
+    }
+
+    .stat-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
     }
     
     /* Navigation drawer menu for Mobile */
