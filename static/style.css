@@ -2184,3 +2184,100 @@ footer {
         height: 450px;
     }
 }
+
+/* ==========================================================================
+   Trusted Clients Logo Slider
+   ========================================================================== */
+.clients-slider-wrapper {
+    width: 100%;
+    overflow: hidden;
+    padding: 2rem 0;
+    position: relative;
+}
+
+.clients-slider-wrapper::before, .clients-slider-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 150px;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.clients-slider-wrapper::before {
+    left: 0;
+    background: linear-gradient(90deg, var(--bg-main) 0%, transparent 100%);
+}
+
+.clients-slider-wrapper::after {
+    right: 0;
+    background: linear-gradient(270deg, var(--bg-main) 0%, transparent 100%);
+}
+
+.clients-track {
+    display: flex;
+    gap: 3rem;
+    width: calc(280px * 16);
+    animation: scrollLogos 30s linear infinite;
+}
+
+.clients-track:hover {
+    animation-play-state: paused;
+}
+
+.client-logo-card {
+    width: 250px;
+    height: 70px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0 1.5rem;
+    transition: var(--transition-smooth);
+    cursor: default;
+    flex-shrink: 0;
+    box-shadow: var(--shadow-sm);
+}
+
+.client-logo-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--border-color-hover);
+    box-shadow: var(--shadow-md), var(--shadow-glow);
+}
+
+.client-logo-svg {
+    width: 24px;
+    height: 24px;
+    color: var(--text-muted);
+    transition: var(--transition-smooth);
+}
+
+.client-logo-card:hover .client-logo-svg {
+    color: var(--accent);
+}
+
+.client-logo-card span {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    transition: var(--transition-smooth);
+}
+
+.client-logo-card:hover span {
+    color: var(--text-headings);
+}
+
+@keyframes scrollLogos {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(calc(-250px * 8 - 3rem * 8));
+    }
+}
