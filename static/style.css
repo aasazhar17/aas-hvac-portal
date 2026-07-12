@@ -1664,8 +1664,8 @@ footer {
 /* Back to Top Button */
 .back-to-top {
     position: fixed;
-    bottom: 2rem;
-    right: 2rem;
+    bottom: 7.5rem;
+    right: 2.5rem;
     width: 44px;
     height: 44px;
     border-radius: 50%;
@@ -1810,8 +1810,8 @@ footer {
         display: flex;
     }
     
-    .nav-actions .btn-outline {
-        display: none; /* Hide primary button on header for mobile layout */
+    .nav-actions #header-quote-btn {
+        display: none; /* Hide primary quote button on header for mobile layout */
     }
     
     .timeline-horizontal, .process-grid-row {
@@ -1839,6 +1839,49 @@ footer {
     
     .about-pillars {
         grid-template-columns: 1fr;
+    }
+    
+    /* Resize and reposition floating action buttons on mobile screens to prevent text overlap */
+    .floating-actions {
+        bottom: 1rem;
+        left: 1rem;
+        gap: 0.5rem;
+    }
+    .floating-btn {
+        width: 42px;
+        height: 42px;
+    }
+    .floating-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+    
+    /* Stack back-to-top button above chatbot button on mobile */
+    .back-to-top {
+        bottom: 5.5rem;
+        right: 1.25rem;
+        width: 40px;
+        height: 40px;
+    }
+    
+    /* Adjust chatbot widget dimensions on mobile screens */
+    .chatbot-widget {
+        bottom: 1rem;
+        right: 1rem;
+    }
+    .chatbot-btn {
+        width: 48px;
+        height: 48px;
+    }
+    .chatbot-btn svg {
+        width: 22px;
+        height: 22px;
+    }
+    .chatbot-panel {
+        bottom: 65px;
+        width: calc(100vw - 2rem);
+        right: 0;
+        height: 420px;
     }
 }
 
