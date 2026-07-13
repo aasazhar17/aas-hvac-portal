@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 /* ==========================================================================
    1. Dataset: HVAC Products (Extracted from PDF Catalog)
    ========================================================================== */
-const PRODUCTS_DATA = [
+let PRODUCTS_DATA = [
     {
         id: 'screw-chiller',
         name: 'AAS Screw Chiller',
@@ -317,9 +317,21 @@ function initScrollReveal() {
 /* ==========================================================================
    6. Product Catalog Display & Category Filters
    ========================================================================== */
-function initProductCatalog() {
+async function initProductCatalog() {
     const catalogGrid = document.getElementById('product-catalog-grid');
     if (!catalogGrid) return;
+
+    try {
+        const response = await fetch('/api/products');
+        if (response.ok) {
+            const fetchedProducts = await response.json();
+            if (fetchedProducts && fetchedProducts.length > 0) {
+                PRODUCTS_DATA = fetchedProducts;
+            }
+        }
+    } catch (err) {
+        console.error("Could not fetch live products database, using fallback data:", err);
+    }
 
     const displayProducts = (filterCategory) => {
         catalogGrid.innerHTML = '';
@@ -366,57 +378,64 @@ function initProductCatalog() {
     });
 
     displayProducts('all');
+    initProductsCarousel(); // Initialize carousel now that database is loaded
 }
 
 /* ==========================================================================
    7. Product Specification Modal Viewer
    ========================================================================== */
-function attachSpecListeners() {
-    const specBtns = document.querySelectorAll('.view-spec-btn');
+function showProductSpecs(productId) {
     const specModal = document.getElementById('spec-modal');
     const specTitle = document.getElementById('spec-title');
     const specBody = document.getElementById('spec-body');
+    if (!specModal || !specTitle || !specBody) return;
+
+    const product = PRODUCTS_DATA.find(p => p.id === productId);
+    if (product) {
+        specTitle.textContent = product.name;
+        
+        let specsHTML = `<p style="margin-bottom:1.5rem; font-size:1rem;">${product.desc}</p>`;
+        specsHTML += `<div style="display:flex; flex-direction:column; gap:1rem;">`;
+        
+        for (const [key, value] of Object.entries(product.specs)) {
+            specsHTML += `
+                <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                    <strong style="color: var(--text-headings); font-size: 0.9rem; display:block; margin-bottom:0.25rem;">${key}</strong>
+                    <span style="font-size:0.9rem; color:var(--text-muted);">${value}</span>
+                </div>
+            `;
+        }
+        specsHTML += `</div>`;
+        specsHTML += `
+            <div style="margin-top:2.5rem; text-align:right;">
+                <button class="btn btn-primary btn-card modal-inquire-trigger" data-name="${product.name}">Inquire for this System</button>
+            </div>
+        `;
+        
+        specBody.innerHTML = specsHTML;
+        specModal.classList.add('active');
+
+        const subInquireBtn = specBody.querySelector('.modal-inquire-trigger');
+        if (subInquireBtn) {
+            subInquireBtn.addEventListener('click', () => {
+                specModal.classList.remove('active');
+                openQuoteModal(product.name);
+            });
+        }
+    }
+}
+
+function attachSpecListeners() {
+    const specBtns = document.querySelectorAll('.view-spec-btn');
+    const specModal = document.getElementById('spec-modal');
     const specModalClose = document.getElementById('spec-modal-close');
 
-    if (!specModal || !specTitle || !specBody) return;
+    if (!specModal) return;
 
     specBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             const prodId = btn.getAttribute('data-id');
-            const product = PRODUCTS_DATA.find(p => p.id === prodId);
-            
-            if (product) {
-                specTitle.textContent = product.name;
-                
-                let specsHTML = `<p style="margin-bottom:1.5rem; font-size:1rem;">${product.desc}</p>`;
-                specsHTML += `<div style="display:flex; flex-direction:column; gap:1rem;">`;
-                
-                for (const [key, value] of Object.entries(product.specs)) {
-                    specsHTML += `
-                        <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
-                            <strong style="color: var(--text-headings); font-size: 0.9rem; display:block; margin-bottom:0.25rem;">${key}</strong>
-                            <span style="font-size:0.9rem; color:var(--text-muted);">${value}</span>
-                        </div>
-                    `;
-                }
-                specsHTML += `</div>`;
-                specsHTML += `
-                    <div style="margin-top:2.5rem; text-align:right;">
-                        <button class="btn btn-primary btn-card modal-inquire-trigger" data-name="${product.name}">Inquire for this System</button>
-                    </div>
-                `;
-                
-                specBody.innerHTML = specsHTML;
-                specModal.classList.add('active');
-
-                const subInquireBtn = specBody.querySelector('.modal-inquire-trigger');
-                if (subInquireBtn) {
-                    subInquireBtn.addEventListener('click', () => {
-                        specModal.classList.remove('active');
-                        openQuoteModal(product.name);
-                    });
-                }
-            }
+            showProductSpecs(prodId);
         });
     });
 
@@ -425,6 +444,122 @@ function attachSpecListeners() {
             specModal.classList.remove('active');
         });
     }
+}
+
+/* ==========================================================================
+   7.1. Products Homepage Carousel with Auto-slide
+   ========================================================================== */
+function initProductsCarousel() {
+    const track = document.getElementById('carousel-track');
+    const indicatorsContainer = document.getElementById('carousel-indicators');
+    const prevBtn = document.getElementById('carousel-prev');
+    const nextBtn = document.getElementById('carousel-next');
+    if (!track) return;
+
+    // Filter main products: Scroll Chillers, Screw Chillers, AHUs
+    const carouselItems = PRODUCTS_DATA.filter(prod => 
+        prod.id === 'scroll-chiller' || 
+        prod.id === 'screw-chiller' || 
+        prod.id === 'air-handling-unit'
+    );
+
+    if (carouselItems.length === 0) return;
+
+    track.innerHTML = '';
+    carouselItems.forEach((prod) => {
+        const slide = document.createElement('div');
+        slide.className = 'products-carousel-slide';
+        slide.innerHTML = `
+            <div class="carousel-slide-image" style="background-image: url('${prod.image}');"></div>
+            <div class="carousel-slide-content">
+                <span class="carousel-slide-badge">${prod.badge}</span>
+                <h3 style="font-size: 1.8rem; color: var(--text-headings); font-weight:800;">${prod.name}</h3>
+                <p style="font-size: 0.95rem; color: var(--text-muted); line-height:1.5;">${prod.desc}</p>
+                <div style="margin-top: 1rem; display: flex; gap: 1rem; flex-wrap:wrap;">
+                    <button class="btn btn-primary btn-gold carousel-inquire-btn" data-name="${prod.name}">Quick Inquiry</button>
+                    <button class="btn btn-outline carousel-spec-btn" data-id="${prod.id}">Specifications</button>
+                </div>
+            </div>
+        `;
+        track.appendChild(slide);
+    });
+
+    if (indicatorsContainer) {
+        indicatorsContainer.innerHTML = '';
+        carouselItems.forEach((_, index) => {
+            const ind = document.createElement('div');
+            ind.className = `carousel-indicator ${index === 0 ? 'active' : ''}`;
+            ind.setAttribute('data-index', index);
+            indicatorsContainer.appendChild(ind);
+        });
+    }
+
+    let currentIndex = 0;
+    const slidesCount = carouselItems.length;
+
+    const updateCarousel = (index) => {
+        track.style.transform = `translateX(-${index * 100}%)`;
+        const indicators = indicatorsContainer ? indicatorsContainer.querySelectorAll('.carousel-indicator') : [];
+        indicators.forEach((ind, idx) => {
+            if (idx === index) ind.classList.add('active');
+            else ind.classList.remove('active');
+        });
+        currentIndex = index;
+    };
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            const nextIndex = (currentIndex + 1) % slidesCount;
+            updateCarousel(nextIndex);
+        });
+    }
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            const prevIndex = (currentIndex - 1 + slidesCount) % slidesCount;
+            updateCarousel(prevIndex);
+        });
+    }
+
+    if (indicatorsContainer) {
+        indicatorsContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('carousel-indicator')) {
+                const index = parseInt(e.target.getAttribute('data-index'));
+                updateCarousel(index);
+            }
+        });
+    }
+
+    let autoSlideInterval = setInterval(() => {
+        const nextIndex = (currentIndex + 1) % slidesCount;
+        updateCarousel(nextIndex);
+    }, 4000);
+
+    const resetAutoSlide = () => {
+        clearInterval(autoSlideInterval);
+        autoSlideInterval = setInterval(() => {
+            const nextIndex = (currentIndex + 1) % slidesCount;
+            updateCarousel(nextIndex);
+        }, 4000);
+    };
+
+    if (nextBtn) nextBtn.addEventListener('click', resetAutoSlide);
+    if (prevBtn) prevBtn.addEventListener('click', resetAutoSlide);
+    if (indicatorsContainer) indicatorsContainer.addEventListener('click', resetAutoSlide);
+
+    track.addEventListener('click', (e) => {
+        const inquireBtn = e.target.closest('.carousel-inquire-btn');
+        if (inquireBtn) {
+            const name = inquireBtn.getAttribute('data-name');
+            openQuoteModal(name);
+        }
+
+        const specBtn = e.target.closest('.carousel-spec-btn');
+        if (specBtn) {
+            const id = specBtn.getAttribute('data-id');
+            showProductSpecs(id);
+        }
+    });
 }
 
 /* ==========================================================================
@@ -566,7 +701,8 @@ function initModals() {
     
     const quoteBtns = [
         document.getElementById('header-quote-btn'),
-        document.getElementById('hero-quote-btn')
+        document.getElementById('hero-quote-btn'),
+        document.getElementById('floating-enquiry-trigger')
     ];
 
     openQuoteModal = (productPresetName = '') => {

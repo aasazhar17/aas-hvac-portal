@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found | AAS Engineering</title>
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚠️</text></svg>">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .error-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 2rem;
+            background: radial-gradient(circle at center, rgba(0, 163, 163, 0.05) 0%, transparent 70%);
+        }
+        .error-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color-hover);
+            border-radius: var(--border-radius);
+            padding: 4rem 3rem;
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+            max-width: 550px;
+            width: 90%;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .error-code {
+            font-size: 6rem;
+            font-weight: 800;
+            color: var(--secondary);
+            line-height: 1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -2px;
+        }
+        .error-title {
+            font-size: 1.75rem;
+            color: var(--text-headings);
+            margin-bottom: 1rem;
+        }
+        .error-desc {
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            font-size: 1rem;
+        }
+    </style>
+    <script>
+        // Apply theme immediately
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    </script>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-card">
+            <div class="error-code">404</div>
+            <h1 class="error-title">Page Not Found</h1>
+            <p class="error-desc">The industrial catalog drawing or page you are requesting could not be located. It might have been relocated or deleted.</p>
+            <a href="/" class="btn btn-primary btn-gold">Back to Homepage</a>
+        </div>
+    </div>
+</body>
+</html>

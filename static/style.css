@@ -11,29 +11,30 @@
     --bg-section: #f8fafc;
     --bg-card: rgba(255, 255, 255, 0.85);
     --bg-card-hover: rgba(255, 255, 255, 0.98);
-    --bg-footer: #0f172a;
+    --bg-footer: #0a1829;
     
-    --primary: #0F172A; /* Slate Navy */
-    --secondary: #1E40AF; /* Royal Blue */
-    --accent: #0EA5E9; /* Sky Blue */
-    --accent-glow: rgba(14, 165, 233, 0.15);
+    --primary: #0B2A4A; /* Modern Deep Slate Navy */
+    --secondary: #00A3A3; /* Accessible Industrial Teal */
+    --accent: #00A3A3; /* Accessible Industrial Teal */
+    --accent-glow: rgba(0, 163, 163, 0.15);
+    --gold-cta: #D4AF37; /* Premium Gold for CTAs */
     
     --text-main: #334155;
-    --text-headings: #0F172A;
+    --text-headings: #0B2A4A;
     --text-muted: #64748b;
     --text-white: #ffffff;
     
-    --border-color: rgba(15, 23, 42, 0.08);
-    --border-color-hover: rgba(30, 64, 175, 0.25);
+    --border-color: rgba(11, 42, 74, 0.08);
+    --border-color-hover: rgba(0, 163, 163, 0.25);
     
-    --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.04);
-    --shadow-md: 0 10px 30px -10px rgba(15, 23, 42, 0.08);
-    --shadow-lg: 0 20px 40px -15px rgba(15, 23, 42, 0.12);
-    --shadow-glow: 0 0 20px rgba(14, 165, 233, 0.15);
+    --shadow-sm: 0 2px 8px rgba(11, 42, 74, 0.04);
+    --shadow-md: 0 10px 30px -10px rgba(11, 42, 74, 0.08);
+    --shadow-lg: 0 20px 40px -15px rgba(11, 42, 74, 0.12);
+    --shadow-glow: 0 0 20px rgba(0, 163, 163, 0.15);
     
     --gradient-hero: linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(224, 242, 254, 0.6) 100%);
-    --gradient-accent: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
-    --gradient-glow-flow: linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.2), transparent);
+    --gradient-accent: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    --gradient-glow-flow: linear-gradient(90deg, transparent, rgba(0, 163, 163, 0.2), transparent);
     
     /* Global Layout Tokens */
     --max-width: 1280px;
@@ -45,30 +46,31 @@
 
 /* --- Dark Mode Override Theme Tokens --- */
 [data-theme="dark"] {
-    --bg-main: #0b0f19;
-    --bg-section: #0f172a;
-    --bg-card: rgba(22, 30, 49, 0.8);
-    --bg-card-hover: rgba(30, 41, 67, 0.95);
-    --bg-footer: #080c14;
+    --bg-main: #060a12;
+    --bg-section: #0a1120;
+    --bg-card: rgba(13, 22, 38, 0.8);
+    --bg-card-hover: rgba(20, 32, 54, 0.95);
+    --bg-footer: #03060b;
     
     --primary: #f8fafc;
-    --secondary: #3b82f6; /* Lighter blue for dark contrast */
-    --accent: #38bdf8;
-    --accent-glow: rgba(56, 189, 248, 0.15);
+    --secondary: #00cccc; /* Brighter teal for dark contrast */
+    --accent: #00cccc;
+    --accent-glow: rgba(0, 204, 204, 0.15);
+    --gold-cta: #ffd700; /* Bright gold for CTAs */
     
     --text-main: #cbd5e1;
     --text-headings: #f8fafc;
     --text-muted: #94a3b8;
     
     --border-color: rgba(255, 255, 255, 0.06);
-    --border-color-hover: rgba(56, 189, 248, 0.3);
+    --border-color-hover: rgba(0, 204, 204, 0.3);
     
     --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
     --shadow-md: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
     --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
-    --shadow-glow: 0 0 25px rgba(56, 189, 248, 0.2);
+    --shadow-glow: 0 0 25px rgba(0, 204, 204, 0.2);
     
-    --gradient-hero: linear-gradient(135deg, #0b0f19 0%, #070d19 100%);
+    --gradient-hero: linear-gradient(135deg, #060a12 0%, #03070d 100%);
 }
 
 /* ==========================================================================
@@ -2289,4 +2291,251 @@ footer {
     100% {
         transform: translateX(calc(-250px * 8 - 3rem * 8));
     }
+}
+
+/* ==========================================================================
+   Modular Incremental Improvements (AAS Portal 2026 Upgrades)
+   ========================================================================== */
+
+/* Gold CTA Button Styling */
+.btn-gold {
+    background: var(--gold-cta) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 10px 20px -5px rgba(212, 175, 55, 0.4) !important;
+    transition: var(--transition-smooth) !important;
+}
+
+.btn-gold:hover {
+    background: #c59b27 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 15px 30px -5px rgba(212, 175, 55, 0.6), 0 0 20px rgba(212, 175, 55, 0.3) !important;
+}
+
+/* Floating Quick Enquiry Button */
+.floating-enquiry-btn {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    z-index: 999;
+    background: var(--gold-cta);
+    color: #ffffff;
+    border: none;
+    border-radius: 50px;
+    padding: 1rem 1.75rem;
+    font-weight: 700;
+    font-family: var(--font-heading);
+    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4), var(--shadow-glow);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition-smooth);
+}
+
+.floating-enquiry-btn:hover {
+    transform: translateY(-4px) scale(1.02);
+    background: #c59b27;
+    box-shadow: 0 15px 30px rgba(212, 175, 55, 0.6), var(--shadow-glow);
+}
+
+@media (max-width: 480px) {
+    .floating-enquiry-btn {
+        bottom: 1.5rem;
+        left: 1.5rem;
+        padding: 0.8rem 1.2rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* Scroll Reveal Fade-in Animations */
+.reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(25px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.reveal-on-scroll.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Products Carousel Styles */
+.products-carousel-container {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    margin-bottom: 4rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 2.5rem;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.products-carousel-track-wrapper {
+    overflow: hidden;
+    width: 100%;
+}
+
+.products-carousel-track {
+    display: flex;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
+}
+
+.products-carousel-slide {
+    min-width: 100%;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 3rem;
+    align-items: center;
+    padding: 0.5rem 0;
+}
+
+@media (max-width: 900px) {
+    .products-carousel-slide {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+}
+
+.carousel-slide-image {
+    width: 100%;
+    height: 380px;
+    background-size: cover;
+    background-position: center;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+}
+
+@media (max-width: 900px) {
+    .carousel-slide-image {
+        height: 250px;
+    }
+}
+
+.carousel-slide-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    text-align: left;
+}
+
+.carousel-slide-badge {
+    align-self: flex-start;
+    background: var(--accent-glow);
+    color: var(--accent);
+    padding: 0.3rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.carousel-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border-color);
+    padding-top: 1.5rem;
+}
+
+.carousel-arrows {
+    display: flex;
+    gap: 1rem;
+}
+
+.carousel-arrow {
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    color: var(--text-headings);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    box-shadow: var(--shadow-sm);
+}
+
+.carousel-arrow:hover {
+    background: var(--secondary);
+    color: var(--text-white);
+    border-color: var(--secondary);
+    transform: scale(1.05);
+}
+
+.carousel-indicators {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.carousel-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border-color-hover);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.carousel-indicator.active {
+    background: var(--secondary);
+    transform: scale(1.1);
+    width: 18px;
+    border-radius: 10px;
+}
+
+/* ==========================================================================
+   Toast Notification & Chart Canvas Blocks
+   ========================================================================== */
+.toast-notification {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--bg-card);
+    border-left: 4px solid var(--accent);
+    color: var(--text-headings);
+    padding: 1.15rem 1.85rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg), 0 0 15px var(--accent-glow);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.toast-notification.active {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.chart-container-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin-bottom: 2.5rem;
+    box-shadow: var(--shadow-md);
+}
+
+.chart-wrapper {
+    position: relative;
+    width: 100%;
+    height: 300px;
 }

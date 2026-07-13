@@ -66,6 +66,7 @@
             border: 1px solid var(--border-color);
             box-shadow: var(--shadow-md);
             background: var(--bg-card);
+            margin-bottom: 2rem;
         }
         
         table {
@@ -91,7 +92,7 @@
         }
         
         tr:hover td {
-            background-color: rgba(30, 64, 175, 0.04);
+            background-color: rgba(0, 163, 163, 0.04);
         }
         
         .empty-row-msg {
@@ -199,7 +200,7 @@
     <div class="lock-overlay" id="admin-lock-screen">
         <div class="lock-card">
             <div class="lock-logo">AAS Admin Portal</div>
-            <div class="lock-desc">Enter authorization passkey to manage inquiries and system chat histories.</div>
+            <div class="lock-desc">Enter role-based authorization passkey to manage enquiries, logs, or products catalog.</div>
             <form id="admin-login-form" onsubmit="handleAdminLogin(event)">
                 <div class="lock-field">
                     <label for="passkey-input">Security Passkey</label>
@@ -225,7 +226,7 @@
                 </ul>
             </div>
             
-            <div style="font-family: var(--font-heading); font-weight:700; color:var(--accent);">
+            <div style="font-family: var(--font-heading); font-weight:700; color:var(--accent);" id="active-role-display">
                 ADMIN PANEL
             </div>
         </div>
@@ -236,15 +237,36 @@
         <div class="container">
             <div class="section-header" style="text-align: left; max-width: 100%; margin-bottom: 2rem;">
                 <span class="uppercase-badge">B2B Operations Management</span>
-                <h2>Inquiry & Conversation Logs</h2>
-                <p>Monitor real-time customer requests, catalog downloads, and smart chatbot parameters.</p>
+                <h2>Inquiry & Control Mission Center</h2>
+                <p>Monitor real-time customer requests, catalog downloads, and products inventory details.</p>
+            </div>
+
+            <!-- KPI Dashboard Row -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;" id="kpi-dashboard-row">
+                <div class="premium-card" style="padding: 1.5rem; text-align: center;">
+                    <div style="font-size: 0.8rem; font-weight:700; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem;">Inquiries Received</div>
+                    <div style="font-size: 2.25rem; font-weight:800; color: var(--text-headings);" id="kpi-inquiries">0</div>
+                </div>
+                <div class="premium-card" style="padding: 1.5rem; text-align: center;">
+                    <div style="font-size: 0.8rem; font-weight:700; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem;">Catalog Downloads</div>
+                    <div style="font-size: 2.25rem; font-weight:800; color: var(--text-headings);" id="kpi-downloads">0</div>
+                </div>
+                <div class="premium-card" style="padding: 1.5rem; text-align: center;">
+                    <div style="font-size: 0.8rem; font-weight:700; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem;">Assistant Chats</div>
+                    <div style="font-size: 2.25rem; font-weight:800; color: var(--text-headings);" id="kpi-chats">0</div>
+                </div>
+                <div class="premium-card" style="padding: 1.5rem; text-align: center;">
+                    <div style="font-size: 0.8rem; font-weight:700; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem;">Managed Products</div>
+                    <div style="font-size: 2.25rem; font-weight:800; color: var(--text-headings);" id="kpi-products">0</div>
+                </div>
             </div>
             
             <!-- Navigation Tabs -->
-            <div class="admin-nav-tabs">
-                <button class="tab-btn active" onclick="switchTab(event, 'inquiries-tab')">B2B Inquiries</button>
-                <button class="tab-btn" onclick="switchTab(event, 'catalog-tab')">Catalog Access Requests</button>
-                <button class="tab-btn" onclick="switchTab(event, 'chat-tab')">Assistant Conversations</button>
+            <div class="admin-nav-tabs" id="tab-buttons-container">
+                <button class="tab-btn active" id="btn-tab-inquiries" onclick="switchTab(event, 'inquiries-tab')">B2B Inquiries</button>
+                <button class="tab-btn" id="btn-tab-catalog" onclick="switchTab(event, 'catalog-tab')">Catalog Access Requests</button>
+                <button class="tab-btn" id="btn-tab-chats" onclick="switchTab(event, 'chat-tab')">Assistant Conversations</button>
+                <button class="tab-btn" id="btn-tab-products" onclick="switchTab(event, 'products-tab')">Manage Products</button>
             </div>
             
             <!-- Inquiries Panel -->
@@ -306,8 +328,101 @@
                     </table>
                 </div>
             </div>
+
+            <!-- Products CRUD Panel -->
+            <div id="products-tab" class="tab-content-panel">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem; flex-wrap:wrap; gap:1rem;">
+                    <h3 style="font-size: 1.5rem; color: var(--text-headings);">Product Catalog Inventory</h3>
+                    <button class="btn btn-primary btn-gold" onclick="openAddProductModal()">+ Add New Product</button>
+                </div>
+                <div class="admin-table-container">
+                    <table id="products-table">
+                        <thead>
+                            <tr>
+                                <th>Thumbnail</th>
+                                <th>ID (Slug)</th>
+                                <th>Product Name</th>
+                                <th>Category</th>
+                                <th>Badge</th>
+                                <th>Description</th>
+                                <th style="text-align: center;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </main>
+
+    <!-- Add/Edit Product Modal Dialog -->
+    <div class="modal" id="product-crud-modal">
+        <div class="modal-content" style="max-width: 700px; padding: 2.5rem; border-radius: var(--border-radius); background: var(--bg-card); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);">
+            <button class="modal-close" onclick="closeProductModal()" aria-label="Close dialog">&times;</button>
+            <div class="modal-header" style="margin-bottom: 2rem;">
+                <h3 id="product-modal-title">Add New HVAC Product</h3>
+            </div>
+            <form id="product-crud-form" onsubmit="handleSaveProduct(event)">
+                <div class="form-group-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.25rem;">
+                    <div class="form-field" style="display:flex; flex-direction:column; gap:0.5rem;">
+                        <label for="prod-id" style="font-weight: 600; font-size: 0.85rem;">Product Slug ID (e.g. scroll-chiller)</label>
+                        <input type="text" id="prod-id" required style="padding:0.75rem; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-main); color:var(--text-main);">
+                    </div>
+                    <div class="form-field" style="display:flex; flex-direction:column; gap:0.5rem;">
+                        <label for="prod-name" style="font-weight: 600; font-size: 0.85rem;">Product Name</label>
+                        <input type="text" id="prod-name" required style="padding:0.75rem; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-main); color:var(--text-main);">
+                    </div>
+                </div>
+                
+                <div class="form-group-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.25rem;">
+                    <div class="form-field" style="display:flex; flex-direction:column; gap:0.5rem;">
+                        <label for="prod-category" style="font-weight: 600; font-size: 0.85rem;">Category</label>
+                        <select id="prod-category" style="padding:0.75rem; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-main); color:var(--text-main);">
+                            <option value="chillers">Industrial Chillers</option>
+                            <option value="dairy">Dairy & Cold Rooms</option>
+                            <option value="hvac">Ventilation & HVAC</option>
+                            <option value="custom">Custom Solutions</option>
+                        </select>
+                    </div>
+                    <div class="form-field" style="display:flex; flex-direction:column; gap:0.5rem;">
+                        <label for="prod-badge" style="font-weight: 600; font-size: 0.85rem;">Promo Badge (e.g. High Capacity)</label>
+                        <input type="text" id="prod-badge" required style="padding:0.75rem; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-main); color:var(--text-main);">
+                    </div>
+                </div>
+
+                <div class="form-group-row" style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 1.5rem; margin-bottom: 1.25rem; align-items: flex-end;">
+                    <div class="form-field" style="display:flex; flex-direction:column; gap:0.5rem;">
+                        <label for="prod-image" style="font-weight: 600; font-size: 0.85rem;">Product Image Path</label>
+                        <input type="text" id="prod-image" required style="padding:0.75rem; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-main); color:var(--text-main);" placeholder="assets/images/chiller.png">
+                    </div>
+                    <div class="form-field" style="display:flex; flex-direction:column; gap:0.5rem;">
+                        <label for="prod-image-file" style="font-weight: 600; font-size: 0.85rem; cursor: pointer; color:var(--secondary);">Or Upload Image File</label>
+                        <input type="file" id="prod-image-file" accept="image/*" onchange="uploadProductImage(event)" style="padding: 0.5rem 0;">
+                    </div>
+                </div>
+
+                <div class="form-field" style="display:flex; flex-direction:column; gap:0.5rem; margin-bottom: 1.5rem;">
+                    <label for="prod-desc" style="font-weight: 600; font-size: 0.85rem;">Product Description</label>
+                    <textarea id="prod-desc" required style="padding:0.75rem; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-main); color:var(--text-main); height: 80px; resize: none;"></textarea>
+                </div>
+
+                <!-- Technical Specs Builder -->
+                <div style="margin-bottom: 2rem;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.75rem;">
+                        <label style="font-weight: 700; font-size: 0.9rem; color:var(--text-headings);">Technical Specifications</label>
+                        <button type="button" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size:0.75rem; border-radius:6px;" onclick="addSpecRow()">+ Add Spec Row</button>
+                    </div>
+                    <div id="specs-builder-rows" style="display:flex; flex-direction:column; gap: 0.5rem; max-height: 150px; overflow-y: auto; padding-right: 0.5rem;">
+                        <!-- Specs key-value fields added here -->
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-gold" style="width:100%;">Save Catalog Product</button>
+            </form>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer style="margin-top: 100px;">
@@ -324,6 +439,8 @@
         if (savedTheme === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
         }
+
+        let userRole = 'admin'; // local cache
 
         function switchTab(event, tabId) {
             document.querySelectorAll('.tab-content-panel').forEach(panel => {
@@ -343,6 +460,7 @@
                 const authenticated = await verifyToken(token);
                 if (authenticated) {
                     showDashboard();
+                    configureDashboardLayout();
                     fetchDashboardData(token);
                     // Start refresh poll
                     setInterval(() => fetchDashboardData(token), 15000);
@@ -354,10 +472,18 @@
 
         async function verifyToken(token) {
             try {
-                const res = await fetch('/api/inquiries', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                return res.ok;
+                // Passkey direct role detection
+                if (token === "AAS_ADMIN_ARSHAD_2026") {
+                    userRole = "admin";
+                    return true;
+                } else if (token === "AAS_SALES_CRM_2026") {
+                    userRole = "sales";
+                    return true;
+                } else if (token === "AAS_EDITOR_CONTENT_2026") {
+                    userRole = "editor";
+                    return true;
+                }
+                return false;
             } catch (err) {
                 return false;
             }
@@ -375,6 +501,7 @@
             if (authenticated) {
                 sessionStorage.setItem('aas_admin_token', token);
                 showDashboard();
+                configureDashboardLayout();
                 fetchDashboardData(token);
                 // Start refresh poll
                 setInterval(() => fetchDashboardData(token), 15000);
@@ -387,87 +514,359 @@
         function showDashboard() {
             document.getElementById('admin-lock-screen').style.display = 'none';
             document.getElementById('dashboard-content').style.display = 'block';
+            document.getElementById('active-role-display').textContent = `ROLE: ${userRole.toUpperCase()}`;
+        }
+
+        function configureDashboardLayout() {
+            const inquiriesTabBtn = document.getElementById('btn-tab-inquiries');
+            const catalogTabBtn = document.getElementById('btn-tab-catalog');
+            const chatsTabBtn = document.getElementById('btn-tab-chats');
+            const productsTabBtn = document.getElementById('btn-tab-products');
+
+            // Hide all tab buttons by default
+            inquiriesTabBtn.style.display = 'none';
+            catalogTabBtn.style.display = 'none';
+            chatsTabBtn.style.display = 'none';
+            productsTabBtn.style.display = 'none';
+
+            // Deactivate all panels
+            document.querySelectorAll('.tab-content-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            if (userRole === 'admin') {
+                inquiriesTabBtn.style.display = 'inline-block';
+                catalogTabBtn.style.display = 'inline-block';
+                chatsTabBtn.style.display = 'inline-block';
+                productsTabBtn.style.display = 'inline-block';
+                
+                // Show inquiries by default
+                document.getElementById('inquiries-tab').classList.add('active');
+                inquiriesTabBtn.classList.add('active');
+            } else if (userRole === 'sales') {
+                inquiriesTabBtn.style.display = 'inline-block';
+                catalogTabBtn.style.display = 'inline-block';
+                chatsTabBtn.style.display = 'inline-block';
+                
+                // Show inquiries by default
+                document.getElementById('inquiries-tab').classList.add('active');
+                inquiriesTabBtn.classList.add('active');
+            } else if (userRole === 'editor') {
+                productsTabBtn.style.display = 'inline-block';
+                
+                // Show products by default
+                document.getElementById('products-tab').classList.add('active');
+                productsTabBtn.classList.add('active');
+            }
         }
 
         async function fetchDashboardData(token) {
             try {
-                // 1. Fetch Inquiries
-                const resInq = await fetch('/api/inquiries', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (resInq.ok) {
-                    const data = await resInq.json();
-                    const body = document.getElementById('inquiries-body');
-                    body.innerHTML = '';
-                    if (data.length === 0) {
-                        body.innerHTML = '<tr><td colspan="8" class="empty-row-msg">No B2B inquiries logged yet.</td></tr>';
-                    } else {
-                        data.forEach(item => {
-                            const tr = document.createElement('tr');
-                            tr.innerHTML = `
-                                <td><strong>#${item.id}</strong></td>
-                                <td style="white-space: nowrap;">${item.created_at}</td>
-                                <td><strong>${escapeHTML(item.name)}</strong></td>
-                                <td>${escapeHTML(item.company)}</td>
-                                <td><a href="mailto:${item.email}" style="color:var(--secondary); font-weight:600;">${escapeHTML(item.email)}</a></td>
-                                <td style="white-space: nowrap;">${escapeHTML(item.phone)}</td>
-                                <td><span class="status-badge">${formatProductBadge(item.product)}</span></td>
-                                <td style="max-width: 300px; word-break: break-word;">${escapeHTML(item.message)}</td>
-                            `;
-                            body.appendChild(tr);
-                        });
+                // 1. Fetch Inquiries (Only if authorized)
+                if (userRole === 'admin' || userRole === 'sales') {
+                    const resInq = await fetch('/api/inquiries', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (resInq.ok) {
+                        const data = await resInq.json();
+                        document.getElementById('kpi-inquiries').textContent = data.length;
+                        
+                        const body = document.getElementById('inquiries-body');
+                        body.innerHTML = '';
+                        if (data.length === 0) {
+                            body.innerHTML = '<tr><td colspan="8" class="empty-row-msg">No B2B inquiries logged yet.</td></tr>';
+                        } else {
+                            data.forEach(item => {
+                                const tr = document.createElement('tr');
+                                tr.innerHTML = `
+                                    <td><strong>#${item.id}</strong></td>
+                                    <td style="white-space: nowrap;">${item.created_at}</td>
+                                    <td><strong>${escapeHTML(item.name)}</strong></td>
+                                    <td>${escapeHTML(item.company)}</td>
+                                    <td><a href="mailto:${item.email}" style="color:var(--secondary); font-weight:600;">${escapeHTML(item.email)}</a></td>
+                                    <td style="white-space: nowrap;">${escapeHTML(item.phone)}</td>
+                                    <td><span class="status-badge">${formatProductBadge(item.product)}</span></td>
+                                    <td style="max-width: 300px; word-break: break-word;">${escapeHTML(item.message)}</td>
+                                `;
+                                body.appendChild(tr);
+                            });
+                        }
+                    }
+
+                    // 2. Fetch Catalog Downloads
+                    const resCat = await fetch('/api/catalog-downloads', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (resCat.ok) {
+                        const data = await resCat.json();
+                        document.getElementById('kpi-downloads').textContent = data.length;
+
+                        const body = document.getElementById('catalog-body');
+                        body.innerHTML = '';
+                        if (data.length === 0) {
+                            body.innerHTML = '<tr><td colspan="3" class="empty-row-msg">No catalog requests recorded yet.</td></tr>';
+                        } else {
+                            data.forEach(item => {
+                                const tr = document.createElement('tr');
+                                tr.innerHTML = `
+                                    <td><strong>#${item.id}</strong></td>
+                                    <td style="white-space: nowrap;">${item.created_at}</td>
+                                    <td><a href="mailto:${item.email}" style="color:var(--secondary); font-weight:600;">${escapeHTML(item.email)}</a></td>
+                                `;
+                                body.appendChild(tr);
+                            });
+                        }
+                    }
+
+                    // 3. Fetch Chats Log
+                    const resChat = await fetch('/api/chats', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (resChat.ok) {
+                        const data = await resChat.json();
+                        document.getElementById('kpi-chats').textContent = data.length;
+
+                        const body = document.getElementById('chat-body');
+                        body.innerHTML = '';
+                        if (data.length === 0) {
+                            body.innerHTML = '<tr><td colspan="4" class="empty-row-msg">No bot conversation logs recorded.</td></tr>';
+                        } else {
+                            data.forEach(item => {
+                                const tr = document.createElement('tr');
+                                tr.innerHTML = `
+                                    <td><strong>#${item.id}</strong></td>
+                                    <td style="white-space: nowrap;">${item.created_at}</td>
+                                    <td style="max-width: 250px; font-weight:600; color:var(--text-headings);">${escapeHTML(item.user_message)}</td>
+                                    <td style="max-width: 400px;">${item.bot_response}</td>
+                                `;
+                                body.appendChild(tr);
+                            });
+                        }
                     }
                 }
 
-                // 2. Fetch Catalog Downloads
-                const resCat = await fetch('/api/catalog-downloads', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (resCat.ok) {
-                    const data = await resCat.json();
-                    const body = document.getElementById('catalog-body');
-                    body.innerHTML = '';
-                    if (data.length === 0) {
-                        body.innerHTML = '<tr><td colspan="3" class="empty-row-msg">No catalog requests recorded yet.</td></tr>';
-                    } else {
-                        data.forEach(item => {
-                            const tr = document.createElement('tr');
-                            tr.innerHTML = `
-                                <td><strong>#${item.id}</strong></td>
-                                <td style="white-space: nowrap;">${item.created_at}</td>
-                                <td><a href="mailto:${item.email}" style="color:var(--secondary); font-weight:600;">${escapeHTML(item.email)}</a></td>
-                            `;
-                            body.appendChild(tr);
-                        });
+                // 4. Fetch Products (accessible to admin and editor)
+                if (userRole === 'admin' || userRole === 'editor') {
+                    const resProd = await fetch('/api/products');
+                    if (resProd.ok) {
+                        const data = await resProd.json();
+                        document.getElementById('kpi-products').textContent = data.length;
+
+                        const body = document.getElementById('products-body');
+                        body.innerHTML = '';
+                        if (data.length === 0) {
+                            body.innerHTML = '<tr><td colspan="7" class="empty-row-msg">No products registered in catalog database.</td></tr>';
+                        } else {
+                            data.forEach(item => {
+                                const tr = document.createElement('tr');
+                                tr.innerHTML = `
+                                    <td><img src="/${item.image}" style="width: 50px; height: 35px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color);"></td>
+                                    <td><code>${item.id}</code></td>
+                                    <td><strong>${escapeHTML(item.name)}</strong></td>
+                                    <td><span class="status-badge" style="background-color:rgba(0, 163, 163, 0.1); color:var(--secondary);">${item.category.toUpperCase()}</span></td>
+                                    <td><span style="font-size:0.8rem; font-weight:600; color:var(--accent);">${escapeHTML(item.badge)}</span></td>
+                                    <td style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHTML(item.desc)}</td>
+                                    <td style="text-align: center; white-space: nowrap;">
+                                        <button class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size:0.75rem; border-radius:6px; margin-right: 0.5rem;" onclick="openEditProductModal('${item.id}')">Edit</button>
+                                        <button class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size:0.75rem; border-radius:6px; border-color:#ef4444; color:#ef4444;" onclick="deleteProduct('${item.id}')">Delete</button>
+                                    </td>
+                                `;
+                                body.appendChild(tr);
+                            });
+                        }
                     }
                 }
 
-                // 3. Fetch Chats Log
-                const resChat = await fetch('/api/chats', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (resChat.ok) {
-                    const data = await resChat.json();
-                    const body = document.getElementById('chat-body');
-                    body.innerHTML = '';
-                    if (data.length === 0) {
-                        body.innerHTML = '<tr><td colspan="4" class="empty-row-msg">No bot conversation logs recorded.</td></tr>';
-                    } else {
-                        data.forEach(item => {
-                            const tr = document.createElement('tr');
-                            tr.innerHTML = `
-                                <td><strong>#${item.id}</strong></td>
-                                <td style="white-space: nowrap;">${item.created_at}</td>
-                                <td style="max-width: 250px; font-weight:600; color:var(--text-headings);">${escapeHTML(item.user_message)}</td>
-                                <td style="max-width: 400px;">${item.bot_response}</td>
-                            `;
-                            body.appendChild(tr);
-                        });
+                // If not Admin but Sales/Editor, pull active products count to show KPI correctly
+                if (userRole === 'sales') {
+                    const resProd = await fetch('/api/products');
+                    if (resProd.ok) {
+                        const data = await resProd.json();
+                        document.getElementById('kpi-products').textContent = data.length;
+                    }
+                } else if (userRole === 'editor') {
+                    // Pull fake/stub inquiry counts from API using token just for stats
+                    const resInq = await fetch('/api/inquiries', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    }).catch(() => null);
+                    if (resInq && resInq.ok) {
+                        const data = await resInq.json();
+                        document.getElementById('kpi-inquiries').textContent = data.length;
                     }
                 }
 
             } catch (err) {
                 console.error("Failed to load admin logs API data:", err);
+            }
+        }
+
+        // Product CRUD Dialog Operations
+        let editingProductId = null; // null for add, string ID for edit
+
+        function openAddProductModal() {
+            editingProductId = null;
+            document.getElementById('product-modal-title').textContent = "Add New HVAC Product";
+            document.getElementById('prod-id').disabled = false;
+            document.getElementById('product-crud-form').reset();
+            document.getElementById('specs-builder-rows').innerHTML = '';
+            
+            // Add initial empty spec lines
+            addSpecRow('Compressor Type', '');
+            addSpecRow('Capacities', '');
+            
+            document.getElementById('product-crud-modal').classList.add('active');
+        }
+
+        async function openEditProductModal(productId) {
+            editingProductId = productId;
+            document.getElementById('product-modal-title').textContent = "Edit HVAC Product Details";
+            document.getElementById('prod-id').disabled = true;
+            
+            try {
+                const res = await fetch('/api/products');
+                if (res.ok) {
+                    const products = await res.json();
+                    const product = products.find(p => p.id === productId);
+                    if (product) {
+                        document.getElementById('prod-id').value = product.id;
+                        document.getElementById('prod-name').value = product.name;
+                        document.getElementById('prod-category').value = product.category;
+                        document.getElementById('prod-badge').value = product.badge;
+                        document.getElementById('prod-image').value = product.image;
+                        document.getElementById('prod-desc').value = product.desc;
+                        
+                        const specsBox = document.getElementById('specs-builder-rows');
+                        specsBox.innerHTML = '';
+                        for (const [k, v] of Object.entries(product.specs)) {
+                            addSpecRow(k, v);
+                        }
+                    }
+                }
+            } catch (err) {
+                alert('Could not fetch product details for editing.');
+            }
+            
+            document.getElementById('product-crud-modal').classList.add('active');
+        }
+
+        function closeProductModal() {
+            document.getElementById('product-crud-modal').classList.remove('active');
+        }
+
+        function addSpecRow(key = '', value = '') {
+            const container = document.getElementById('specs-builder-rows');
+            const row = document.createElement('div');
+            row.style.display = 'flex';
+            row.style.gap = '0.5rem';
+            row.style.alignItems = 'center';
+            row.className = 'spec-builder-row';
+            
+            row.innerHTML = `
+                <input type="text" placeholder="Spec Key (e.g. Controls)" class="spec-key" value="${escapeHTML(key)}" required style="flex:1; padding:0.5rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-main); color:var(--text-main); font-size:0.85rem;">
+                <input type="text" placeholder="Spec Value (e.g. Microprocessor)" class="spec-val" value="${escapeHTML(value)}" required style="flex:1.5; padding:0.5rem; border:1px solid var(--border-color); border-radius:6px; background:var(--bg-main); color:var(--text-main); font-size:0.85rem;">
+                <button type="button" onclick="this.parentElement.remove()" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:1.2rem; font-weight:700; padding:0 0.5rem;">&times;</button>
+            `;
+            container.appendChild(row);
+        }
+
+        async function uploadProductImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const token = sessionStorage.getItem('aas_admin_token');
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const res = await fetch('/api/upload', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('prod-image').value = data.image_url;
+                    alert('Image uploaded successfully: ' + data.image_url);
+                } else {
+                    const err = await res.json();
+                    alert('Upload failed: ' + (err.detail || 'Server error'));
+                }
+            } catch (err) {
+                alert('Connection error during image upload.');
+            }
+        }
+
+        async function handleSaveProduct(event) {
+            event.preventDefault();
+            const token = sessionStorage.getItem('aas_admin_token');
+
+            const pid = document.getElementById('prod-id').value.trim();
+            const name = document.getElementById('prod-name').value.trim();
+            const category = document.getElementById('prod-category').value;
+            const badge = document.getElementById('prod-badge').value.trim();
+            const image = document.getElementById('prod-image').value.trim();
+            const desc = document.getElementById('prod-desc').value.trim();
+
+            const specs = {};
+            const specRows = document.querySelectorAll('.spec-builder-row');
+            specRows.forEach(row => {
+                const k = row.querySelector('.spec-key').value.trim();
+                const v = row.querySelector('.spec-val').value.trim();
+                if (k && v) {
+                    specs[k] = v;
+                }
+            });
+
+            const productData = { id: pid, name, category, image, badge, desc, specs };
+            const method = editingProductId ? 'PUT' : 'POST';
+            const url = editingProductId ? `/api/products/${editingProductId}` : '/api/products';
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(productData)
+                });
+
+                if (res.ok) {
+                    alert('Product saved successfully to B2B catalog database!');
+                    closeProductModal();
+                    fetchDashboardData(token);
+                } else {
+                    const err = await res.json();
+                    alert('Save failed: ' + (err.detail || 'Server error'));
+                }
+            } catch (err) {
+                alert('Connection error saving product.');
+            }
+        }
+
+        async function deleteProduct(productId) {
+            if (!confirm('Are you sure you want to permanently delete this product from the database catalog?')) return;
+            const token = sessionStorage.getItem('aas_admin_token');
+
+            try {
+                const res = await fetch(`/api/products/${productId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    alert('Product deleted successfully.');
+                    fetchDashboardData(token);
+                } else {
+                    const err = await res.json();
+                    alert('Delete failed: ' + (err.detail || 'Server error'));
+                }
+            } catch (err) {
+                alert('Connection error deleting product.');
             }
         }
 

@@ -51,7 +51,7 @@
                     <!-- Moon Icon (SVG) -->
                     <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
                 </button>
-                <button class="btn btn-primary btn-card" id="header-quote-btn">Request Quote</button>
+                <button class="btn btn-primary btn-gold btn-card" id="header-quote-btn">Request Quote</button>
             </div>
 
             <div class="menu-toggle" id="mobile-menu-btn" aria-label="Open mobile menu">
@@ -70,8 +70,8 @@
                 <h1>Engineering Excellence <span>in HVAC Manufacturing</span></h1>
                 <p>Delivering high-performance air conditioning and engineered air systems with precision fabrication, technology integrations, and certified manufacturing controls.</p>
                 <div class="hero-actions">
-                    <a href="#products" class="btn btn-primary">View Products</a>
-                    <button class="btn btn-outline" id="hero-quote-btn">Request Quote</button>
+                    <a href="#products" class="btn btn-outline">View Products</a>
+                    <button class="btn btn-primary btn-gold" id="hero-quote-btn">Request Quote</button>
                 </div>
             </div>
             <div class="hero-visual">
@@ -287,6 +287,24 @@
                 <span class="uppercase-badge">Product Showcase</span>
                 <h2>HVAC Product Catalog</h2>
                 <p>Browse our standard production lines or request a customized layout configuration based on your structural blueprint.</p>
+            </div>
+            
+            <!-- Products Carousel -->
+            <div class="products-carousel-container reveal-on-scroll">
+                <div class="products-carousel-track-wrapper">
+                    <div id="carousel-track" class="products-carousel-track">
+                        <!-- Loaded dynamically by app.js -->
+                    </div>
+                </div>
+                <div class="carousel-controls">
+                    <div id="carousel-indicators" class="carousel-indicators">
+                        <!-- Loaded dynamically -->
+                    </div>
+                    <div class="carousel-arrows">
+                        <button id="carousel-prev" class="carousel-arrow" aria-label="Previous main product">←</button>
+                        <button id="carousel-next" class="carousel-arrow" aria-label="Next main product">→</button>
+                    </div>
+                </div>
             </div>
             
             <div class="products-wrapper">
@@ -1017,7 +1035,13 @@
         </div>
     </div>
 
+    <!-- Floating Quick Enquiry Button -->
+    <button class="floating-enquiry-btn" id="floating-enquiry-trigger">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span>Quick Enquiry</span>
+    </button>
+
     <!-- Script file link -->
-    <script src="app.js"></script>
+    <script src="app.js" defer></script>
 </body>
 </html>

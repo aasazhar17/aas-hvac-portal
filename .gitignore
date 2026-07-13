@@ -5,6 +5,11 @@ __pycache__/
 # Local SQLite Database (keeps your operational logs private)
 database.db
 
+# Local environment and runtime artifacts
+.env
+.env.*
+app.log
+
 # Virtual Environments
 .venv/
 venv/
